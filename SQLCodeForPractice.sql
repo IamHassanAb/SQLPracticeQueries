@@ -313,3 +313,87 @@ Group By JobTitle
 Having COUNT(JobTitle) > 1
 
 
+--------------------------------------------------------------------------------------------------------------------------
+
+-- Stores Procedures
+
+-- First Procedure
+
+Drop Procedure If Exists dbo.spEmployeeSalary_getall;
+Go
+Create Procedure dbo.spEmployeeSalary_getall
+As
+Begin
+	Set NoCount on;
+
+	Select EmployeeID, JobTitle, Salary
+	From PortfolioProject..EmployeeSalary
+End
+
+-- Executing
+exec dbo.spEmployeeSalary_getall
+
+
+-- Second Procedure
+
+
+Drop Procedure If Exists dbo.spTemp_CreateTable;
+GO
+Create Procedure dbo.spTemp_CreateTable
+	@JobTitle nvarchar(100)
+As
+Begin
+	Set NoCount on;
+Drop Table IF Exists #temp_Employee;
+Create Table #temp_Employee 
+(
+	JobTitle varchar(100),
+	EmployeePerJob int,
+	AvgAge float,
+	AvgSalary float,
+
+)
+
+Insert Into #temp_Employee
+Select JobTitle, Count(JobTitle),Avg(Age),Avg(Salary)
+From PortfolioProject..EmployeeDemographics ed 
+Join PortfolioProject..EmployeeSalary es
+	On ed.EmployeeID = es.EmployeeID
+Where JobTitle = @JobTitle
+Group By JobTitle
+
+Select *
+From #temp_Employee
+
+End
+
+-- Executing 
+
+EXEC dbo.spTemp_CreateTable @JobTitle = 'Salesman'
+
+--------------------------------------------------------------------------------------------------------------------------
+
+-- Some PSQL Queries
+
+
+--SELECT 
+--      location ,lon , Split_part(TRIM(both '()' from location),',',2) as longitude, lat ,Split_part(TRIM(both '()' from location),',',1) as latitude
+--From tutorial.sf_crime_incidents_2014_01
+
+
+
+--Select
+--      location , 
+--      lon, 
+--      TRIM(trailing ')' From Right(location, LENGTH(location) - POSITION(',' IN location) ) ) as longitude, 
+--      lat,
+--      TRIM(Leading '(' From LEFT(location, POSITION(',' IN location) + 1 ) ) as latitude
+--From tutorial.sf_crime_incidents_2014_01
+
+
+--SELECT location,
+--       lon,
+--       SUBSTR( location, Position(',' In location) + 1,LENGTH(location) - 2 ) AS longitude,
+--       lat,
+--       SUBSTR( location, 2, Position(',' In location) - 1) as latitude
+--  FROM tutorial.sf_crime_incidents_2014_01
