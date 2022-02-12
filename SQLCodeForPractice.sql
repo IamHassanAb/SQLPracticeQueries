@@ -62,7 +62,7 @@ Select *
 From EmployeeDemographics
 
 
-Select Max(Salary) AS Minimum, Min(Salary) AS Maximum, Avg(Salary) AS Average
+Select Max(Salary) AS Maximum, Min(Salary) AS Minimum, Avg(Salary) AS Average
 From EmployeeSalary
 
 -- Where Conditions =, <>, !=, IN,BETWEEN,LIKE,REGEXP,AND,OR,NOT, IS NULL, IS NOT NULL, >=, >, <=, <, 
